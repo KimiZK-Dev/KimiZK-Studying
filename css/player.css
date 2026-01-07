@@ -1,0 +1,119 @@
+/**
+ * Player Styles
+ * Video Player Card, Meta Info, Plyr Customization
+ */
+
+/* Player Layout */
+.player-layout {
+    max-width: 1100px;
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Player Card */
+.player-card {
+    background: black;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    aspect-ratio: 16/9;
+}
+
+/* Plyr Customization */
+.player-card {
+    --plyr-color-main: var(--color-primary);
+    --plyr-control-icon-size: 16px;
+}
+
+.player-card.show-shadow {
+    box-shadow: var(--shadow-lg);
+}
+
+/* Video Meta */
+.video-meta {
+    background: var(--color-surface);
+    padding: 20px;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-sidebar-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.video-meta h2 {
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    color: var(--color-text-main);
+}
+
+.meta-tags {
+    display: flex;
+    gap: 10px;
+}
+
+.tag {
+    font-size: 0.85rem;
+    padding: 4px 12px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+}
+
+.topic-tag {
+    background: rgba(79, 70, 229, 0.1);
+    color: var(--color-primary);
+}
+
+.time-tag {
+    background: var(--color-bg-app);
+    color: var(--color-text-muted);
+}
+
+/* Video Section Animation */
+.video-section {
+    width: 100%;
+}
+
+/* Plyr Additional Overrides */
+.plyr {
+    border-radius: var(--radius-lg);
+}
+
+.plyr--video {
+    height: 100%;
+}
+
+.plyr__controls {
+    padding: 10px 15px;
+}
+
+.plyr__control--overlaid {
+    background: var(--color-primary);
+}
+
+.plyr__control--overlaid:hover {
+    background: var(--color-primary-hover);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .player-layout {
+        padding: 0 10px;
+    }
+    
+    .video-meta {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+    
+    .meta-tags {
+        justify-content: center;
+    }
+}

@@ -1,0 +1,105 @@
+/**
+ * LocalStorage Operations
+ * Centralized storage management with error handling
+ */
+
+import { CONFIG } from './config.js';
+import { state } from './state.js';
+
+/**
+ * Save data to localStorage
+ * @param {string} key - Storage key
+ * @param {any} data - Data to save
+ */
+export function saveToStorage(key, data) {
+    try {
+        localStorage.setItem(key, JSON.stringify(data));
+    } catch (e) {
+        console.error('Storage save error:', e);
+    }
+}
+
+/**
+ * Load data from localStorage
+ * @param {string} key - Storage key
+ * @param {any} defaultValue - Default value if not found
+ * @returns {any}
+ */
+export function loadFromStorage(key, defaultValue = null) {
+    try {
+        const data = localStorage.getItem(key);
+        return data ? JSON.parse(data) : defaultValue;
+    } catch (e) {
+        console.error('Storage load error:', e);
+        return defaultValue;
+    }
+}
+
+/**
+ * Save notes for a video
+ * @param {string} videoId - Video ID
+ * @param {object} contents - Quill contents
+ */
+export function saveNotes(videoId, contents) {
+    const allNotes = loadFromStorage(CONFIG.keys.NOTES_DATA, {});
+    allNotes[videoId] = contents;
+    saveToStorage(CONFIG.keys.NOTES_DATA, allNotes);
+}
+
+/**
+ * Load notes for a video
+ * @param {string} videoId - Video ID
+ * @returns {object|null}
+ */
+export function loadNotes(videoId) {
+    const allNotes = loadFromStorage(CONFIG.keys.NOTES_DATA, {});
+    return allNotes[videoId] || null;
+}
+
+/**
+ * Save statistics
+ */
+export function saveStats() {
+    saveToStorage(CONFIG.keys.STATS, state.stats);
+}
+
+/**
+ * Load statistics into state
+ */
+export function loadStats() {
+    const stats = loadFromStorage(CONFIG.keys.STATS);
+    if (stats) {
+        state.stats = stats;
+    }
+}
+
+/**
+ * Save theme preference
+ * @param {boolean} isDark
+ */
+export function saveTheme(isDark) {
+    saveToStorage(CONFIG.keys.THEME, isDark);
+}
+
+/**
+ * Load theme preference
+ * @returns {boolean}
+ */
+export function loadTheme() {
+    return loadFromStorage(CONFIG.keys.THEME, false);
+}
+
+/**
+ * Check if tour has been seen
+ * @returns {boolean}
+ */
+export function isTourSeen() {
+    return !!localStorage.getItem(CONFIG.keys.TOUR_SEEN);
+}
+
+/**
+ * Mark tour as seen
+ */
+export function markTourSeen() {
+    localStorage.setItem(CONFIG.keys.TOUR_SEEN, 'true');
+}
