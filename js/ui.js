@@ -16,6 +16,7 @@ export const ui = {
     videoTitle: null,
     videoTopic: null,
     videoTime: null,
+    materialBtn: null,
     currentCourse: null,
     totalVideosBadge: null,
     
@@ -50,6 +51,7 @@ export function initUI() {
     ui.videoTitle = document.getElementById('videoTitle');
     ui.videoTopic = document.getElementById('videoTopic');
     ui.videoTime = document.getElementById('videoTime');
+    ui.materialBtn = document.getElementById('materialBtn');
     ui.currentCourse = document.getElementById('currentCourseName');
     ui.totalVideosBadge = document.getElementById('totalVideosBadge');
     
@@ -105,22 +107,62 @@ export function loadSettings() {
 }
 
 /**
- * Show keyboard shortcuts modal
+ * Show keyboard shortcuts modal (custom implementation)
  */
 export function showShortcutsModal() {
-    Swal.fire({
-        title: '<strong>Phím tắt</strong>',
-        html: `
-            <div style="text-align: left; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div><kbd>Space</kbd> Play/Pause</div>
-                <div><kbd>←</kbd> <kbd>→</kbd> Seek 10s</div>
-                <div><kbd>↑</kbd> <kbd>↓</kbd> Volume</div>
-                <div><kbd>F</kbd> Fullscreen</div>
-                <div><kbd>M</kbd> Mute</div>
+    // Check if modal already exists
+    let modal = document.getElementById('shortcutsModal');
+    
+    if (!modal) {
+        // Create modal HTML
+        modal = document.createElement('div');
+        modal.id = 'shortcutsModal';
+        modal.className = 'custom-modal-overlay';
+        modal.innerHTML = `
+            <div class="custom-modal">
+                <div class="custom-modal-header">
+                    <h3><i class="fas fa-keyboard"></i> Phím tắt</h3>
+                    <button class="custom-modal-close" id="closeShortcutsModal">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="custom-modal-body">
+                    <div class="shortcuts-grid">
+                        <div class="shortcut-item"><kbd>Space</kbd> <span>Play/Pause</span></div>
+                        <div class="shortcut-item"><kbd>←</kbd> <kbd>→</kbd> <span>Tua 10s</span></div>
+                        <div class="shortcut-item"><kbd>↑</kbd> <kbd>↓</kbd> <span>Âm lượng</span></div>
+                        <div class="shortcut-item"><kbd>F</kbd> <span>Toàn màn hình</span></div>
+                        <div class="shortcut-item"><kbd>M</kbd> <span>Tắt tiếng</span></div>
+                        <div class="shortcut-item"><kbd>N</kbd> <span>Ghi chú</span></div>
+                    </div>
+                </div>
             </div>
-        `,
-        showCloseButton: true,
-        showConfirmButton: false
+        `;
+        document.body.appendChild(modal);
+        
+        // Close button
+        document.getElementById('closeShortcutsModal').onclick = () => {
+            modal.classList.remove('show');
+        };
+        
+        // Click outside to close
+        modal.onclick = (e) => {
+            if (e.target === modal) {
+                modal.classList.remove('show');
+            }
+        };
+        
+        // ESC to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.classList.contains('show')) {
+                modal.classList.remove('show');
+            }
+        });
+    }
+    
+    // Show modal
+    requestAnimationFrame(() => {
+        modal.classList.add('show');
     });
 }
 

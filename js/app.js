@@ -11,6 +11,7 @@ import {
 import { initPlyr } from './player.js';
 import { initQuill } from './notes.js';
 import { initPomodoro } from './pomodoro.js';
+import { initPDFViewer } from './pdf-viewer.js';
 import { updateStatsModal } from './stats.js';
 import { handleFilesSelected } from './course.js';
 import { checkAndStartTour, startTour } from './tour.js';
@@ -74,6 +75,7 @@ function init() {
     initPlyr();
     initQuill();
     initPomodoro();
+    initPDFViewer();
     
     // Setup event listeners
     setupEventListeners();

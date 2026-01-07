@@ -5,10 +5,11 @@
 
 import { CONFIG } from './config.js';
 import { state } from './state.js';
-import { formatTime } from './utils.js';
+import { formatTime, showToast } from './utils.js';
 import { saveStats } from './storage.js';
 import { ui, showPlayer, updateVideoMeta, updateVideoTime } from './ui.js';
 import { loadNotesForVideo } from './notes.js';
+import { openMaterial } from './pdf-viewer.js';
 
 // Plyr instance
 let player = null;
@@ -60,11 +61,7 @@ function handleVideoEnded() {
     saveStats();
     
     if (state.currentIndex < state.flatPlaylist.length - 1) {
-        Toastify({
-            text: "Next video in 3s...",
-            position: "right",
-            style: { background: "#4f46e5" }
-        }).showToast();
+        showToast("Video tiếp theo sau 3s...", { type: 'info' });
         
         setTimeout(() => playVideo(state.currentIndex + 1), CONFIG.player.autoNextDelay);
     }
@@ -106,6 +103,31 @@ export function playVideo(index) {
     // Update UI
     showPlayer();
     updateVideoMeta(video.displayName, video.topic);
+    
+    // Check for materials (zip)
+    if (ui.materialBtn) {
+        // Debug: Log all zip files found in this topic
+        console.log('--- ZIP DEBUG ---');
+        console.log('Current Video:', video.name);
+        console.log('Video Topic:', video.topic);
+        
+        const topicZips = state.zipFiles[video.topic] || [];
+        console.log('Zips in Topic:', topicZips.map(f => f.name));
+
+        // Strategy 1: Any zip file in the same topic folder
+        const hasZip = topicZips.length > 0;
+
+        console.log('Match Found:', hasZip ? 'YES' : 'NO');
+        
+        if (hasZip) {
+            ui.materialBtn.classList.remove('hidden');
+            // Check if multiple zips exist? For now, open the first one or finding the best match
+            // We pass the topic to openMaterial
+            ui.materialBtn.onclick = () => openMaterial(video);
+        } else {
+            ui.materialBtn.classList.add('hidden');
+        }
+    }
     
     // Expand topic and highlight video in sidebar
     highlightVideoInSidebar(video.id);

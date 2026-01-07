@@ -6,6 +6,7 @@
 import { CONFIG } from './config.js';
 import { state } from './state.js';
 import { ui } from './ui.js';
+import { showToast } from './utils.js';
 
 /**
  * Initialize Pomodoro timer
@@ -61,7 +62,7 @@ function completePomodoro() {
     state.pomodoro.isRunning = false;
     updateStartButton(false);
     
-    Swal.fire('Pomodoro', 'Đã xong 25 phút tập trung!', 'success');
+    showToast('Đã xong 25 phút tập trung!', { type: 'success', duration: 5000 });
 }
 
 /**

@@ -9,6 +9,9 @@ export const state = {
     // Course data grouped by topic: { "Topic Name": [videoObj, ...] }
     courseData: {},
     
+    // Zip files map: { "Topic Name": [fileObj, ...] }
+    zipFiles: {},
+    
     // Flattened playlist for sequential navigation
     flatPlaylist: [],
     
@@ -38,6 +41,7 @@ export const state = {
  */
 export function resetCourseData() {
     state.courseData = {};
+    state.zipFiles = {};
     state.flatPlaylist = [];
     state.currentIndex = -1;
 }

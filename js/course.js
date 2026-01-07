@@ -4,7 +4,7 @@
  */
 
 import { state, resetCourseData } from './state.js';
-import { generateId } from './utils.js';
+import { generateId, showToast } from './utils.js';
 import { ui, updateTotalVideos } from './ui.js';
 import { playVideo } from './player.js';
 
@@ -22,21 +22,28 @@ export function handleFilesSelected(e) {
     let hasVideo = false;
     
     files.forEach(file => {
+        // Extract topic from path first (needed for both video and zip)
+        const pathParts = file.webkitRelativePath.split('/');
+        let topic = "General";
+        if (pathParts.length > 2) {
+            topic = pathParts[pathParts.length - 2];
+        }
+
+        // Handle Zip files
+        if (file.name.toLowerCase().endsWith('.zip')) {
+            if (!state.zipFiles[topic]) {
+                state.zipFiles[topic] = [];
+            }
+            state.zipFiles[topic].push(file);
+            return;
+        }
+
         // Filter videos only
         if (!file.type.startsWith('video/') && !file.name.match(/\.(mp4|mkv|webm|avi|mov)$/i)) {
             return;
         }
         
         hasVideo = true;
-        
-        // Extract topic from path
-        const pathParts = file.webkitRelativePath.split('/');
-        let topic = "General";
-        
-        // If nested structure (Folder -> Subfolder -> File)
-        if (pathParts.length > 2) {
-            topic = pathParts[pathParts.length - 2];
-        }
         
         // Initialize topic array if needed
         if (!state.courseData[topic]) {
@@ -60,7 +67,7 @@ export function handleFilesSelected(e) {
     });
     
     if (!hasVideo) {
-        Swal.fire('Lỗi', 'Không tìm thấy video nào trong thư mục này!', 'error');
+        showToast('Không tìm thấy video nào!', { type: 'error' });
         return;
     }
     
@@ -75,13 +82,7 @@ export function handleFilesSelected(e) {
     playVideo(0);
     
     // Show success notification
-    Swal.fire({
-        icon: 'success',
-        title: 'Đã nhập khóa học',
-        text: `Đã phân loại ${sortedTopics.length} chủ đề.`,
-        timer: 1500,
-        showConfirmButton: false
-    });
+    showToast(`Đã nhập ${sortedTopics.length} chủ đề`, { type: 'success' });
 }
 
 /**

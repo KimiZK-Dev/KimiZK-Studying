@@ -14,7 +14,7 @@
     <!-- CDNs -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.css"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
@@ -42,7 +42,7 @@
                     <label class="btn-primary-upload" id="uploadBtnStep">
                         <i class="fas fa-folder-plus"></i>
                         <span>Thêm Khóa Học</span>
-                        <input type="file" id="folderInput" webkitdirectory directory multiple accept="video/*" hidden>
+                        <input type="file" id="folderInput" webkitdirectory directory multiple hidden>
                     </label>
                 </div>
 
@@ -150,6 +150,30 @@
                             <div class="meta-tags">
                                 <div class="tag topic-tag"><i class="fas fa-folder"></i> <span id="videoTopic">General</span></div>
                                 <div class="tag time-tag"><i class="fas fa-clock"></i> <span id="videoTime">--:--</span></div>
+                                <button id="materialBtn" class="tag material-tag hidden"><i class="fas fa-file-pdf"></i> Tài liệu</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Split View PDF Section - Using Native Browser PDF Viewer -->
+                    <div id="pdfSection" class="pdf-section hidden animate__animated animate__fadeInRight">
+                        <div class="pdf-header">
+                            <span class="pdf-title"><i class="fas fa-file-pdf"></i> Tài liệu học tập</span>
+                            <button class="close-pdf-btn" id="closePdfSplit" title="Đóng PDF">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="pdf-container" id="pdfContainer">
+                            <object id="pdfObject" type="application/pdf" class="pdf-native-viewer">
+                                <p>Trình duyệt không hỗ trợ xem PDF. 
+                                    <a id="pdfFallback" href="#" target="_blank">Tải xuống PDF</a>
+                                </p>
+                            </object>
+                            <div id="pdfLoading" class="pdf-loading hidden">
+                                <div class="loading-spinner">
+                                    <i class="fas fa-spinner fa-spin"></i>
+                                </div>
+                                <span>Đang tải PDF...</span>
                             </div>
                         </div>
                     </div>
@@ -196,12 +220,13 @@
     <!-- Scripts (CDNs) -->
     <script src="https://cdn.plyr.io/3.7.8/plyr.polyfilled.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/driver.js@1.0.1/dist/driver.js.iife.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     
     <!-- Application (ES Module) -->
     <script type="module" src="js/app.js"></script>
