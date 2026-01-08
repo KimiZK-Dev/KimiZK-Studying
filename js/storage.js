@@ -103,3 +103,84 @@ export function isTourSeen() {
 export function markTourSeen() {
     localStorage.setItem(CONFIG.keys.TOUR_SEEN, 'true');
 }
+
+/**
+ * Get default app settings
+ * @returns {object}
+ */
+function getDefaultSettings() {
+    return {
+        autoPlay: true,
+        pomodoroMinutes: 25,
+        defaultSpeed: 1,
+        theme: 'dark'
+    };
+}
+
+/**
+ * Save app settings
+ * @param {object} settings
+ */
+export function saveAppSettings(settings) {
+    saveToStorage(CONFIG.keys.SETTINGS, settings);
+}
+
+/**
+ * Load app settings
+ * @returns {object}
+ */
+export function loadAppSettings() {
+    return loadFromStorage(CONFIG.keys.SETTINGS, getDefaultSettings());
+}
+
+/**
+ * Save video progress (position and completion status)
+ * @param {string} videoId
+ * @param {number} currentTime - Current playback position in seconds
+ * @param {number} duration - Total video duration
+ * @param {boolean} completed - Whether video was watched completely
+ */
+export function saveVideoProgress(videoId, currentTime, duration, completed = false) {
+    const allProgress = loadFromStorage(CONFIG.keys.VIDEO_PROGRESS, {});
+    allProgress[videoId] = {
+        currentTime,
+        duration,
+        completed,
+        lastUpdated: Date.now()
+    };
+    saveToStorage(CONFIG.keys.VIDEO_PROGRESS, allProgress);
+}
+
+/**
+ * Load video progress
+ * @param {string} videoId
+ * @returns {object|null} - { currentTime, duration, completed } or null
+ */
+export function loadVideoProgress(videoId) {
+    const allProgress = loadFromStorage(CONFIG.keys.VIDEO_PROGRESS, {});
+    return allProgress[videoId] || null;
+}
+
+/**
+ * Mark video as completed
+ * @param {string} videoId
+ */
+export function markVideoCompleted(videoId) {
+    const allProgress = loadFromStorage(CONFIG.keys.VIDEO_PROGRESS, {});
+    if (allProgress[videoId]) {
+        allProgress[videoId].completed = true;
+    } else {
+        allProgress[videoId] = { completed: true, lastUpdated: Date.now() };
+    }
+    saveToStorage(CONFIG.keys.VIDEO_PROGRESS, allProgress);
+}
+
+/**
+ * Check if video is completed
+ * @param {string} videoId
+ * @returns {boolean}
+ */
+export function isVideoCompleted(videoId) {
+    const progress = loadVideoProgress(videoId);
+    return progress?.completed || false;
+}

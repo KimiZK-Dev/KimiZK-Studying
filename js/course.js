@@ -54,8 +54,12 @@ export function handleFilesSelected(e) {
         // Strip file extension for display name
         const displayName = file.name.replace(/\.[^/.]+$/, '');
         
+        // Generate stable ID based on topic and filename
+        // This ensures progress/notes are restored when re-uploading the same folder
+        const stableId = btoa(unescape(encodeURIComponent(`${topic}_${file.name}`)));
+        
         const videoObj = {
-            id: generateId(),
+            id: stableId,
             name: file.name,
             displayName: displayName,
             file: file,
@@ -164,17 +168,32 @@ function createTopicGroup(topic, videos) {
  * @param {object} video - Video object
  * @returns {HTMLElement}
  */
+/**
+ * Create video node element
+ * @param {object} video - Video object
+ * @returns {HTMLElement}
+ */
 function createVideoNode(video) {
     const vidEl = document.createElement('div');
     vidEl.className = 'video-node';
     vidEl.dataset.id = video.id;
     vidEl.dataset.title = video.displayName; // For tooltip (no extension)
     
+    // Check completion status from storage
+    // We import dynamically to avoid circular dependency issues at top level if any
+    const isCompleted = localStorage.getItem('edu_video_progress_v3') 
+        ? JSON.parse(localStorage.getItem('edu_video_progress_v3'))[video.id]?.completed 
+        : false;
+
+    if (isCompleted) {
+        vidEl.classList.add('completed');
+    }
+    
     // Find index in flat list
     const flatIndex = state.flatPlaylist.findIndex(v => v.id === video.id);
     
     vidEl.innerHTML = `
-        <span class="status-icon"><i class="far fa-circle-play"></i></span>
+        <span class="status-icon"><i class="${isCompleted ? 'fas fa-check-circle' : 'far fa-circle-play'}"></i></span>
         <span class="v-title">${video.displayName}</span>
     `;
     

@@ -154,53 +154,57 @@
     box-shadow: var(--shadow-lg);
 }
 
-/* Video Meta */
+/* Video Meta - Redesigned for long titles */
 .video-meta {
     background: var(--color-surface);
-    padding: 20px;
+    padding: 16px 20px;
     border-radius: var(--radius-lg);
     border: 1px solid var(--color-sidebar-border);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-/* Video Meta in Split Mode - Compact layout */
-.split-mode .video-meta {
     flex-direction: column;
-    align-items: flex-start;
     gap: 12px;
-    padding: 16px;
-}
-
-.split-mode .video-meta h2 {
-    font-size: 1.1rem;
-    line-height: 1.4;
-}
-
-.split-mode .meta-tags {
-    flex-wrap: wrap;
 }
 
 .video-meta h2 {
     font-family: var(--font-heading);
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     color: var(--color-text-main);
+    line-height: 1.5;
+    margin: 0;
+    /* Truncate to 2 lines */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    cursor: default;
+}
+
+/* Meta Row: Tags + Clock */
+.meta-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 10px;
 }
 
 .meta-tags {
     display: flex;
-    gap: 10px;
+    gap: 8px;
+    flex-wrap: wrap;
 }
 
 .tag {
-    font-size: 0.85rem;
-    padding: 4px 12px;
+    font-size: 0.8rem;
+    padding: 4px 10px;
     border-radius: 20px;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     font-weight: 500;
+    white-space: nowrap;
 }
 
 .topic-tag {
@@ -211,6 +215,34 @@
 .time-tag {
     background: var(--color-bg-app);
     color: var(--color-text-muted);
+}
+
+/* Vietnam Clock */
+.vietnam-clock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    background: var(--color-bg-app);
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-variant-numeric: tabular-nums;
+}
+
+.vietnam-clock i {
+    color: var(--color-primary);
+    font-size: 0.75rem;
+}
+
+/* Video Meta in Split Mode - More compact */
+.split-mode .video-meta {
+    padding: 12px 16px;
+    gap: 10px;
+}
+
+.split-mode .video-meta h2 {
+    font-size: 1rem;
 }
 
 /* Video Section Animation */

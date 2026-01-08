@@ -104,6 +104,9 @@
                     <button class="tool-btn" id="shortcutsInfo" title="Phím tắt">
                         <i class="fas fa-keyboard"></i>
                     </button>
+                    <button class="tool-btn" id="settingsBtn" title="Cài đặt">
+                        <i class="fas fa-cog"></i>
+                    </button>
                 </div>
             </header>
 
@@ -112,7 +115,7 @@
                 <!-- Empty State -->
                 <div id="emptyState" class="welcome-screen animate__animated animate__fadeIn">
                     <div class="hero-content">
-                        <h1>Chào mừng đến với <span class="highlight-text">KimiStudy</span></h1>
+                        <h1>Chào mừng đến với <span style="color: var(--color-primary);">KimiStudy</span></h1>
                         <p>Nền tảng học tập video tập trung cao độ.</p>
                         <div class="hero-actions">
                             <button class="btn-hero primary" onclick="document.getElementById('folderInput').click()">
@@ -146,11 +149,25 @@
                             <video id="player" playsinline controls></video>
                         </div>
                         <div class="video-meta">
-                            <h2 id="videoTitle">Tiêu đề bài học</h2>
-                            <div class="meta-tags">
-                                <div class="tag topic-tag"><i class="fas fa-folder"></i> <span id="videoTopic">General</span></div>
-                                <div class="tag time-tag"><i class="fas fa-clock"></i> <span id="videoTime">--:--</span></div>
-                                <button id="materialBtn" class="tag material-tag hidden"><i class="fas fa-file-pdf"></i> Tài liệu</button>
+                            <h2 id="videoTitle" title="Tiêu đề bài học">Tiêu đề bài học</h2>
+                            <div class="meta-row">
+                                <div class="meta-tags">
+                                    <div class="tag topic-tag"><i class="fas fa-folder"></i> <span id="videoTopic">General</span></div>
+                                    <div class="tag time-tag"><i class="fas fa-play-circle"></i> <span id="videoTime">--:--</span></div>
+                                    <button id="materialBtn" class="tag material-tag hidden"><i class="fas fa-file-pdf"></i> Tài liệu</button>
+                                </div>
+                                <div class="video-nav-controls">
+                                    <button id="prevVideoBtn" class="nav-btn" title="Video trước">
+                                        <i class="fas fa-step-backward"></i>
+                                    </button>
+                                    <button id="nextVideoBtn" class="nav-btn" title="Video tiếp">
+                                        <i class="fas fa-step-forward"></i>
+                                    </button>
+                                </div>
+                                <div class="vietnam-clock">
+                                    <i class="fas fa-clock"></i>
+                                    <span id="vietnamClock">--:--:--</span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -211,6 +228,87 @@
                             <h4>Video hoàn thành</h4>
                             <span id="completedVideos">0</span>
                         </div>
+                    </div>
+                    
+                    <!-- Daily Study History Table -->
+                    <div class="daily-stats-section">
+                        <h4><i class="fas fa-calendar-alt"></i> Lịch sử học tập</h4>
+                        <div class="daily-stats-table-wrapper">
+                            <table id="dailyStatsTable">
+                                <thead>
+                                    <tr>
+                                        <th>Ngày</th>
+                                        <th>Thời gian</th>
+                                        <th>Đánh giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Modal -->
+        <div id="settingsModal" class="modal-overlay hidden">
+            <div class="modal-card settings-modal animate__animated animate__zoomIn">
+                <div class="modal-header">
+                    <h3><i class="fas fa-cog"></i> Cài đặt</h3>
+                    <button class="modal-close" id="closeSettings"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span><i class="fas fa-play-circle"></i> Tự động phát video tiếp</span>
+                            <div class="toggle-switch">
+                                <input type="checkbox" id="settingAutoPlay" checked>
+                                <span class="toggle-slider"></span>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span><i class="fas fa-hourglass-half"></i> Thời gian Pomodoro</span>
+                            <select id="settingPomodoro" class="settings-select">
+                                <option value="15">15 phút</option>
+                                <option value="25" selected>25 phút</option>
+                                <option value="30">30 phút</option>
+                                <option value="45">45 phút</option>
+                                <option value="60">60 phút</option>
+                            </select>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span><i class="fas fa-tachometer-alt"></i> Tốc độ video mặc định</span>
+                            <select id="settingSpeed" class="settings-select">
+                                <option value="0.75">0.75x</option>
+                                <option value="1" selected>1x (Bình thường)</option>
+                                <option value="1.25">1.25x</option>
+                                <option value="1.5">1.5x</option>
+                                <option value="2">2x</option>
+                            </select>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-group">
+                        <label class="settings-label">
+                            <span><i class="fas fa-palette"></i> Giao diện</span>
+                            <select id="settingTheme" class="settings-select">
+                                <option value="light">Sáng</option>
+                                <option value="dark">Tối</option>
+                                <option value="system">Theo hệ thống</option>
+                            </select>
+                        </label>
+                    </div>
+                    
+                    <div class="settings-actions">
+                        <button id="saveSettings" class="btn-save-settings">
+                            <i class="fas fa-save"></i> Lưu cài đặt
+                        </button>
                     </div>
                 </div>
             </div>

@@ -265,6 +265,103 @@ canvas#studyChart {
     color: var(--color-primary);
 }
 
+/* Daily Stats Section */
+.daily-stats-section {
+    margin-top: 24px;
+    border-top: 1px solid var(--color-sidebar-border);
+    padding-top: 20px;
+}
+
+.daily-stats-section h4 {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    margin: 0 0 12px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.daily-stats-section h4 i {
+    color: var(--color-primary);
+}
+
+.daily-stats-table-wrapper {
+    max-height: 180px;
+    overflow-y: auto;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-sidebar-border);
+}
+
+#dailyStatsTable {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+#dailyStatsTable thead {
+    position: sticky;
+    top: 0;
+    background: var(--color-bg-app);
+}
+
+#dailyStatsTable th {
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--color-text-muted);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--color-sidebar-border);
+}
+
+#dailyStatsTable td {
+    padding: 10px 12px;
+    color: var(--color-text-main);
+    border-bottom: 1px solid var(--color-sidebar-border);
+}
+
+#dailyStatsTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+#dailyStatsTable tbody tr:hover {
+    background: var(--color-surface-hover);
+}
+
+/* Rating Badges */
+.rating-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.rating-excellent {
+    background: rgba(16, 185, 129, 0.15);
+    color: #059669;
+}
+
+.rating-good {
+    background: rgba(59, 130, 246, 0.15);
+    color: #2563eb;
+}
+
+.rating-low {
+    background: rgba(245, 158, 11, 0.15);
+    color: #d97706;
+}
+
+.no-data-row {
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+}
+
 .profile-avatar img {
     width: 36px;
     height: 36px;
@@ -463,4 +560,240 @@ kbd {
 .shortcut-item span {
     color: var(--color-text-muted);
     font-weight: 500;
+}
+
+/* --- SETTINGS MODAL STYLES --- */
+.settings-modal {
+    width: 450px;
+}
+
+.settings-group {
+    margin-bottom: 16px;
+}
+
+.settings-group:last-of-type {
+    margin-bottom: 0;
+}
+
+.settings-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--color-bg-app);
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.settings-label:hover {
+    background: var(--color-surface-hover);
+}
+
+.settings-label span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: var(--color-text-main);
+}
+
+.settings-label span i {
+    color: var(--color-primary);
+    width: 18px;
+    text-align: center;
+}
+
+/* Toggle Switch */
+.toggle-switch {
+    position: relative;
+    width: 44px;
+    height: 24px;
+}
+
+.toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #cbd5e1;
+    border-radius: 24px;
+    transition: 0.3s;
+}
+
+.toggle-slider::before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: 0.3s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.toggle-switch input:checked + .toggle-slider {
+    background: var(--color-primary);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(20px);
+}
+
+/* Settings Select */
+.settings-select {
+    padding: 6px 12px;
+    border: 1px solid var(--color-sidebar-border);
+    border-radius: var(--radius-md);
+    background: var(--color-surface);
+    color: var(--color-text-main);
+    font-size: 0.85rem;
+    cursor: pointer;
+    min-width: 140px;
+}
+
+.settings-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+/* Settings Actions */
+.settings-actions {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-sidebar-border);
+}
+
+.btn-save-settings {
+    width: 100%;
+    padding: 12px;
+    background: var(--color-primary);
+    color: white;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-save-settings:hover {
+    background: var(--color-primary-hover);
+    transform: translateY(-1px);
+}
+
+.btn-save-settings:active {
+    transform: translateY(0);
+}
+
+/* --- RESUME MODAL --- */
+.resume-modal {
+    width: 400px;
+}
+
+.resume-video-title {
+    text-align: center;
+    font-size: 1.1rem;
+    color: var(--color-primary);
+    margin-bottom: 8px;
+    line-height: 1.4;
+}
+
+.resume-modal p {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--color-text-main);
+    margin-bottom: 20px;
+}
+
+.resume-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.btn-resume {
+    flex: 1;
+    padding: 12px 16px;
+    border: none;
+    border-radius: var(--radius-md);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.2s;
+}
+
+.btn-resume.primary {
+    background: var(--color-primary);
+    color: white;
+}
+
+.btn-resume.primary:hover {
+    background: var(--color-primary-hover);
+}
+
+.btn-resume.secondary {
+    background: var(--color-bg-app);
+    color: var(--color-text-main);
+    border: 1px solid var(--color-sidebar-border);
+}
+
+.btn-resume.secondary:hover {
+    background: var(--color-surface-hover);
+}
+
+/* --- VIDEO COMPLETION CHECKMARK --- */
+.video-node.completed .status-icon {
+    color: #f59e0b; /* Amber/Yellow */
+}
+
+.video-node.completed .status-icon i {
+    font-weight: 900;
+}
+
+/* --- VIDEO NAVIGATION CONTROLS --- */
+.video-nav-controls {
+    display: flex;
+    gap: 8px;
+}
+
+.nav-btn {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: var(--color-bg-app);
+    color: var(--color-text-muted);
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover:not(:disabled) {
+    background: var(--color-primary);
+    color: white;
+}
+
+.nav-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
 }

@@ -9,7 +9,9 @@ export const CONFIG = {
         NOTES_DATA: 'edu_notes_v3',
         PROGRESS: 'edu_progress_v3',
         STATS: 'edu_stats_v3',
-        TOUR_SEEN: 'edu_tour_seen_v3'
+        TOUR_SEEN: 'edu_tour_seen_v3',
+        SETTINGS: 'edu_settings_v3',
+        VIDEO_PROGRESS: 'edu_video_progress_v3'
     },
     colors: {
         primary: '#4f46e5',

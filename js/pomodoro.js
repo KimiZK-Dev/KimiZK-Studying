@@ -62,7 +62,8 @@ function completePomodoro() {
     state.pomodoro.isRunning = false;
     updateStartButton(false);
     
-    showToast('Đã xong 25 phút tập trung!', { type: 'success', duration: 5000 });
+    const minutes = state.settings?.pomodoroMinutes || CONFIG.pomodoro.defaultMinutes;
+    showToast(`Đã xong ${minutes} phút tập trung!`, { type: 'success', duration: 5000 });
 }
 
 /**
@@ -71,9 +72,23 @@ function completePomodoro() {
 export function resetPomodoro() {
     clearInterval(state.pomodoro.interval);
     state.pomodoro.isRunning = false;
-    state.pomodoro.timeLeft = CONFIG.pomodoro.defaultMinutes * 60;
+    // Use settings if available, otherwise use config default
+    const minutes = state.settings?.pomodoroMinutes || CONFIG.pomodoro.defaultMinutes;
+    state.pomodoro.timeLeft = minutes * 60;
     updateStartButton(false);
     renderTimer();
+}
+
+/**
+ * Set Pomodoro minutes from settings
+ * @param {number} minutes
+ */
+export function setPomodoroMinutes(minutes) {
+    // Only update if timer is not running
+    if (!state.pomodoro.isRunning) {
+        state.pomodoro.timeLeft = minutes * 60;
+        renderTimer();
+    }
 }
 
 /**

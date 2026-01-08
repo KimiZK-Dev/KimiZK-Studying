@@ -215,7 +215,10 @@ export function showPlayer() {
  * @param {string} topic - Video topic
  */
 export function updateVideoMeta(title, topic) {
-    if (ui.videoTitle) ui.videoTitle.textContent = title;
+    if (ui.videoTitle) {
+        ui.videoTitle.textContent = title;
+        ui.videoTitle.setAttribute('title', title); // Full title on hover
+    }
     if (ui.videoTopic) ui.videoTopic.textContent = topic;
 }
 
@@ -233,4 +236,123 @@ export function updateVideoTime(timeStr) {
  */
 export function updateTotalVideos(count) {
     if (ui.totalVideosBadge) ui.totalVideosBadge.textContent = count;
+}
+
+/**
+ * Start Vietnam real-time clock (UTC+7)
+ */
+export function startVietnamClock() {
+    const clockEl = document.getElementById('vietnamClock');
+    if (!clockEl) return;
+    
+    const update = () => {
+        const now = new Date();
+        const vnTime = now.toLocaleTimeString('vi-VN', { 
+            timeZone: 'Asia/Ho_Chi_Minh',
+            hour: '2-digit', 
+            minute: '2-digit', 
+            second: '2-digit',
+            hour12: false
+        });
+        clockEl.textContent = vnTime;
+    };
+    
+    update();
+    setInterval(update, 1000);
+}
+
+/**
+ * Show settings modal
+ */
+export function showSettingsModal() {
+    const modal = document.getElementById('settingsModal');
+    if (modal) {
+        modal.classList.remove('hidden');
+        populateSettingsForm();
+    }
+}
+
+/**
+ * Hide settings modal
+ */
+export function hideSettingsModal() {
+    const modal = document.getElementById('settingsModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+}
+
+/**
+ * Populate settings form with current values
+ */
+function populateSettingsForm() {
+    // Import dynamically to avoid circular dependency
+    import('./storage.js').then(({ loadAppSettings }) => {
+        const settings = loadAppSettings();
+        
+        const autoPlayEl = document.getElementById('settingAutoPlay');
+        const pomodoroEl = document.getElementById('settingPomodoro');
+        const speedEl = document.getElementById('settingSpeed');
+        const themeEl = document.getElementById('settingTheme');
+        
+        if (autoPlayEl) autoPlayEl.checked = settings.autoPlay;
+        if (pomodoroEl) pomodoroEl.value = settings.pomodoroMinutes;
+        if (speedEl) speedEl.value = settings.defaultSpeed;
+        if (themeEl) themeEl.value = settings.theme;
+    });
+}
+
+/**
+ * Save settings from form
+ */
+export function saveSettingsFromForm() {
+    import('./storage.js').then(({ saveAppSettings }) => {
+        import('./utils.js').then(({ showToast }) => {
+            const settings = {
+                autoPlay: document.getElementById('settingAutoPlay')?.checked ?? true,
+                pomodoroMinutes: parseInt(document.getElementById('settingPomodoro')?.value || '25'),
+                defaultSpeed: parseFloat(document.getElementById('settingSpeed')?.value || '1'),
+                theme: document.getElementById('settingTheme')?.value || 'dark'
+            };
+            
+            saveAppSettings(settings);
+            applySettings(settings);
+            showToast('Đã lưu cài đặt!', { type: 'success' });
+            hideSettingsModal();
+        });
+    });
+}
+
+/**
+ * Apply settings immediately
+ * @param {object} settings
+ */
+export function applySettings(settings) {
+    // Apply theme
+    if (settings.theme === 'dark') {
+        toggleTheme(true);
+    } else if (settings.theme === 'light') {
+        toggleTheme(false);
+    } else if (settings.theme === 'system') {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        toggleTheme(prefersDark);
+    }
+    
+    // Store settings in state for other modules to use
+    state.settings = settings;
+    
+    // Apply Pomodoro time
+    import('./pomodoro.js').then(({ setPomodoroMinutes }) => {
+        setPomodoroMinutes(settings.pomodoroMinutes);
+    });
+}
+
+/**
+ * Initialize settings on app load
+ */
+export function initSettings() {
+    import('./storage.js').then(({ loadAppSettings }) => {
+        const settings = loadAppSettings();
+        applySettings(settings);
+    });
 }
