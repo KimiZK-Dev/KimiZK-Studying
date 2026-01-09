@@ -11,7 +11,8 @@ export const CONFIG = {
         STATS: 'edu_stats_v3',
         TOUR_SEEN: 'edu_tour_seen_v3',
         SETTINGS: 'edu_settings_v3',
-        VIDEO_PROGRESS: 'edu_video_progress_v3'
+        VIDEO_PROGRESS: 'edu_video_progress_v3',
+        HISTORY: 'edu_history_v3'
     },
     colors: {
         primary: '#4f46e5',

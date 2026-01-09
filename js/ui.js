@@ -104,6 +104,10 @@ export function loadSettings() {
         toggleTheme(true);
     }
     loadStats();
+    // Use dynamic import for loadHistory as it was added recently
+    import('./storage.js').then(({ loadHistory }) => {
+        loadHistory();
+    });
 }
 
 /**
@@ -344,6 +348,14 @@ export function applySettings(settings) {
     // Apply Pomodoro time
     import('./pomodoro.js').then(({ setPomodoroMinutes }) => {
         setPomodoroMinutes(settings.pomodoroMinutes);
+    });
+    
+    // Apply Speed (if player is active)
+    import('./player.js').then(({ getPlayer }) => {
+        const player = getPlayer();
+        if (player && settings.defaultSpeed) {
+            player.speed = settings.defaultSpeed;
+        }
     });
 }
 

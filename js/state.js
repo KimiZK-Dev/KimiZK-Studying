@@ -33,7 +33,10 @@ export const state = {
         totalSeconds: 0,
         completedVideos: 0,
         dailyActivity: {} // "2023-10-25": 120 (mins)
-    }
+    },
+    
+    // Watch history: [{ videoId, name, topic, timestamp, duration, lastWatched }, ...]
+    watchHistory: []
 };
 
 /**

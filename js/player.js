@@ -6,7 +6,7 @@
 import { CONFIG } from './config.js';
 import { state } from './state.js';
 import { formatTime, showToast } from './utils.js';
-import { saveStats, saveVideoProgress, loadVideoProgress, markVideoCompleted } from './storage.js';
+import { saveStats, saveVideoProgress, loadVideoProgress, markVideoCompleted, saveHistory } from './storage.js';
 import { ui, showPlayer, updateVideoMeta, updateVideoTime } from './ui.js';
 import { loadNotesForVideo } from './notes.js';
 import { openMaterial } from './pdf-viewer.js';
@@ -79,6 +79,9 @@ function saveCurrentProgress() {
         if (completed) {
             updateVideoCompletionInSidebar(video.id);
         }
+        
+        // Add to history
+        addToHistory(video, player.currentTime, player.duration);
     }
 }
 
@@ -96,6 +99,10 @@ function handleVideoEnded() {
     
     state.stats.completedVideos++;
     saveStats();
+    
+    // Add to history (completed)
+    addToHistory(video, player.duration, player.duration);
+    
     
     // Check auto-play setting
     const autoPlay = state.settings?.autoPlay ?? true;
@@ -232,6 +239,12 @@ function startVideoPlayback(index, startTime = 0) {
         sources: [{ src: video.url, type: video.file.type }]
     };
     
+    // Apply default speed from settings
+    if (state.settings && state.settings.defaultSpeed) {
+        player.speed = state.settings.defaultSpeed;
+    }
+    
+    
     // Resume Logic - "The Enforcer"
     // We bind a one-time listener for valid metadata or playing event
     // to force the time update.
@@ -344,4 +357,36 @@ export function playPrev() {
     if (state.currentIndex > 0) {
         playVideo(state.currentIndex - 1);
     }
+}
+
+/**
+ * Add video to watch history
+ * @param {object} video
+ * @param {number} currentTime
+ * @param {number} duration
+ */
+function addToHistory(video, currentTime, duration) {
+    if (!video || !duration) return;
+    
+    const historyItem = {
+        videoId: video.id,
+        name: video.displayName,
+        topic: video.topic,
+        timestamp: currentTime,
+        duration: duration,
+        lastWatched: Date.now()
+    };
+    
+    // Remove existing entry for this video if any
+    state.watchHistory = state.watchHistory.filter(h => h.videoId !== video.id);
+    
+    // Add to top
+    state.watchHistory.unshift(historyItem);
+    
+    // Limit to 50 items
+    if (state.watchHistory.length > 50) {
+        state.watchHistory = state.watchHistory.slice(0, 50);
+    }
+    
+    saveHistory();
 }

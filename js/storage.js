@@ -74,6 +74,23 @@ export function loadStats() {
 }
 
 /**
+ * Save watch history
+ */
+export function saveHistory() {
+    saveToStorage(CONFIG.keys.HISTORY, state.watchHistory);
+}
+
+/**
+ * Load watch history
+ */
+export function loadHistory() {
+    const history = loadFromStorage(CONFIG.keys.HISTORY);
+    if (history) {
+        state.watchHistory = history;
+    }
+}
+
+/**
  * Save theme preference
  * @param {boolean} isDark
  */

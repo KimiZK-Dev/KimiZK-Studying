@@ -101,6 +101,24 @@ function setupEventListeners() {
                 break;
         }
     });
+    
+    // Mobile menu toggle
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const sidebarOverlay = document.getElementById('sidebarOverlay');
+    
+    if (mobileMenuBtn) {
+        mobileMenuBtn.onclick = () => {
+            ui.sidebar?.classList.toggle('mobile-open');
+            sidebarOverlay?.classList.toggle('active');
+        };
+    }
+    
+    if (sidebarOverlay) {
+        sidebarOverlay.onclick = () => {
+            ui.sidebar?.classList.remove('mobile-open');
+            sidebarOverlay.classList.remove('active');
+        };
+    }
 }
 
 /**

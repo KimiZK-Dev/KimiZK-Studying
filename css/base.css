@@ -14,24 +14,35 @@
     
     --color-primary: #4f46e5;
     --color-primary-hover: #4338ca;
+    --color-primary-light: rgba(79, 70, 229, 0.1);
     --color-secondary: #0f172a;
     
     --color-text-main: #1e293b;
     --color-text-muted: #64748b;
     --color-text-light: #94a3b8;
 
+    --color-success: #10b981;
+    --color-warning: #f59e0b;
+    --color-danger: #ef4444;
+
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
     --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 
-    --radius-lg: 12px;
-    --radius-md: 8px;
+    --radius-lg: 16px;
+    --radius-md: 10px;
+    --radius-sm: 6px;
     
-    --sidebar-width: 320px;
-    --header-height: 64px;
+    --sidebar-width: 300px;
+    --header-height: 60px;
     
-    --font-ui: 'Montserrat', sans-serif;
-    --font-heading: 'Montserrat', sans-serif;
+    --font-ui: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+    --font-heading: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+
+    /* Mobile */
+    --touch-target: 44px;
+    --mobile-padding: 16px;
 }
 
 /* Dark Theme */
@@ -43,35 +54,55 @@
     --color-surface: #1e293b;
     --color-surface-hover: #334155;
     
+    --color-primary-light: rgba(79, 70, 229, 0.2);
+    
     --color-text-main: #f8fafc;
     --color-text-muted: #cbd5e1;
     --color-text-light: #64748b;
     
     --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
     --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.5);
 }
 
 /* Reset */
-* {
+*, *::before, *::after {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    outline: none;
+}
+
+/* Remove default button styles */
+button {
+    font-family: inherit;
+    cursor: pointer;
+    border: none;
+    background: none;
 }
 
 /* Body */
+html {
+    font-size: 16px;
+    -webkit-text-size-adjust: 100%;
+}
+
 body {
     font-family: var(--font-ui);
     background-color: var(--color-bg-app);
     color: var(--color-text-main);
     height: 100vh;
+    height: 100dvh; /* Dynamic viewport height for mobile */
     overflow: hidden;
     transition: background-color 0.3s ease, color 0.3s ease;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom Scrollbar - Thinner */
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
-    width: 4px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -80,11 +111,19 @@ body {
 
 ::-webkit-scrollbar-thumb {
     background: var(--color-text-light);
-    border-radius: 2px;
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
     background: var(--color-text-muted);
+}
+
+/* Hide scrollbar on mobile (use native) */
+@media (max-width: 768px) {
+    ::-webkit-scrollbar {
+        width: 0;
+        height: 0;
+    }
 }
 
 /* Utility Classes */
@@ -92,19 +131,23 @@ body {
     display: none !important;
 }
 
-/* Badge */
-.badge {
-    background: var(--color-surface-hover);
-    color: var(--color-text-muted);
-    padding: 2px 8px;
-    border-radius: 12px;
-    font-size: 0.75rem;
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    border: 0;
 }
 
-.stat-badge {
-    background: var(--color-surface-hover);
-    color: var(--color-text-muted);
-    padding: 2px 8px;
-    border-radius: 12px;
+/* Badge */
+.badge, .stat-badge {
+    background: var(--color-primary-light);
+    color: var(--color-primary);
+    padding: 3px 10px;
+    border-radius: 20px;
     font-size: 0.75rem;
+    font-weight: 600;
 }

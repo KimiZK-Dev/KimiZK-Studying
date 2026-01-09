@@ -27,6 +27,9 @@
 </head>
 <body>
     <div class="app-container">
+        <!-- Mobile Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+        
         <!-- Sidebar -->
         <aside class="sidebar" id="appSidebar">
             <div class="sidebar-header">
@@ -80,10 +83,15 @@
         <main class="main-workspace">
             <!-- Top Navigation Bar -->
             <header class="top-nav">
-                <div class="breadcrumbs">
-                    <span class="crumb-icon"><i class="fas fa-home"></i></span>
-                    <i class="fas fa-chevron-right separator"></i>
-                    <span id="currentCourseName">Dashboard</span>
+                <div class="nav-left">
+                    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Menu">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="breadcrumbs">
+                        <span class="crumb-icon"><i class="fas fa-home"></i></span>
+                        <i class="fas fa-chevron-right separator"></i>
+                        <span id="currentCourseName">Dashboard</span>
+                    </div>
                 </div>
 
                 <div class="nav-tools">
@@ -212,34 +220,80 @@
 
         <!-- Stats Modal -->
         <div id="statsModal" class="modal-overlay hidden">
-            <div class="modal-card animate__animated animate__zoomIn">
-                <div class="modal-header">
-                    <h3><i class="fas fa-chart-line"></i> Thống kê học tập</h3>
+            <div class="modal-card stats-modal-card animate__animated animate__zoomIn">
+                <div class="modal-header stats-header">
+                    <h3><i class="fas fa-chart-pie"></i> Thống kê học tập</h3>
                     <button class="modal-close" id="closeStats"><i class="fas fa-times"></i></button>
                 </div>
-                <div class="modal-body">
-                    <canvas id="studyChart"></canvas>
-                    <div class="stats-summary">
-                        <div class="stat-box">
-                            <h4>Tổng thời gian</h4>
-                            <span id="totalStudyTime">0h 0m</span>
+                <div class="modal-body stats-body">
+                    <!-- Stats Cards Row -->
+                    <div class="stats-cards-row">
+                        <div class="stat-card gradient-primary">
+                            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="totalStudyTime">0h 0m</span>
+                                <span class="stat-label">Tổng thời gian</span>
+                            </div>
                         </div>
-                        <div class="stat-box">
-                            <h4>Video hoàn thành</h4>
-                            <span id="completedVideos">0</span>
+                        <div class="stat-card gradient-success">
+                            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="completedVideos">0</span>
+                                <span class="stat-label">Video hoàn thành</span>
+                            </div>
+                        </div>
+                        <div class="stat-card gradient-warning">
+                            <div class="stat-icon"><i class="fas fa-fire"></i></div>
+                            <div class="stat-content">
+                                <span class="stat-value" id="currentStreak">0</span>
+                                <span class="stat-label">Ngày liên tiếp</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <!-- Daily Study History Table -->
-                    <div class="daily-stats-section">
-                        <h4><i class="fas fa-calendar-alt"></i> Lịch sử học tập</h4>
-                        <div class="daily-stats-table-wrapper">
-                            <table id="dailyStatsTable">
+
+                    <!-- Chart Section -->
+                    <div class="chart-section">
+                        <h4><i class="fas fa-chart-bar"></i> Biểu đồ 7 ngày gần nhất</h4>
+                        <div class="chart-container">
+                            <canvas id="studyChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Tabs Navigation -->
+                    <div class="stats-tabs">
+                        <button class="stats-tab active" data-tab="daily">
+                            <i class="fas fa-calendar-alt"></i> Lịch sử học
+                        </button>
+                        <button class="stats-tab" data-tab="history">
+                            <i class="fas fa-history"></i> Video đã xem
+                        </button>
+                    </div>
+
+                    <!-- Tab Content: Daily Stats -->
+                    <div class="stats-tab-content active" id="tab-daily">
+                        <div class="stats-table-wrapper">
+                            <table id="dailyStatsTable" class="stats-table">
                                 <thead>
                                     <tr>
                                         <th>Ngày</th>
                                         <th>Thời gian</th>
                                         <th>Đánh giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Tab Content: Watch History -->
+                    <div class="stats-tab-content" id="tab-history">
+                        <div class="stats-table-wrapper">
+                            <table id="watchHistoryTable" class="stats-table">
+                                <thead>
+                                    <tr>
+                                        <th>Video</th>
+                                        <th>Tiến độ</th>
+                                        <th>Thời gian</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -284,13 +338,11 @@
                     <div class="settings-group">
                         <label class="settings-label">
                             <span><i class="fas fa-tachometer-alt"></i> Tốc độ video mặc định</span>
-                            <select id="settingSpeed" class="settings-select">
-                                <option value="0.75">0.75x</option>
-                                <option value="1" selected>1x (Bình thường)</option>
-                                <option value="1.25">1.25x</option>
-                                <option value="1.5">1.5x</option>
-                                <option value="2">2x</option>
-                            </select>
+                            <div class="speed-input-wrapper">
+                                <input type="number" id="settingSpeed" class="settings-input" min="0.25" max="4.0" step="0.25" value="1">
+                                <span class="unit">x</span>
+                            </div>
+                        </label>
                         </label>
                     </div>
                     
