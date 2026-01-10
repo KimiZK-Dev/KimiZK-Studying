@@ -148,6 +148,24 @@ function createTopicGroup(topic, videos) {
     `;
     header.onclick = () => groupEl.classList.toggle('expanded');
     
+    // Add Tippy tooltip for collapsed mode
+    if (typeof tippy !== 'undefined') {
+        tippy(header, {
+            content: topic,
+            placement: 'right',
+            theme: 'dark',
+            delay: [300, 0],
+            appendTo: document.body,
+            onShow(instance) {
+                // Only show when sidebar is collapsed
+                const sidebar = document.getElementById('appSidebar');
+                if (!sidebar?.classList.contains('collapsed')) {
+                    return false;
+                }
+            }
+        });
+    }
+    
     // Content
     const content = document.createElement('div');
     content.className = 'topic-content';
@@ -196,6 +214,25 @@ function createVideoNode(video) {
         <span class="status-icon"><i class="${isCompleted ? 'fas fa-check-circle' : 'far fa-circle-play'}"></i></span>
         <span class="v-title">${video.displayName}</span>
     `;
+    
+    // Add Tippy tooltip for collapsed mode
+    if (typeof tippy !== 'undefined') {
+        tippy(vidEl, {
+            content: video.displayName,
+            placement: 'right',
+            theme: 'dark',
+            delay: [300, 0],
+            appendTo: document.body,
+            maxWidth: 350,
+            onShow(instance) {
+                // Only show when sidebar is collapsed
+                const sidebar = document.getElementById('appSidebar');
+                if (!sidebar?.classList.contains('collapsed')) {
+                    return false;
+                }
+            }
+        });
+    }
     
     vidEl.onclick = () => {
         // Remove active class from all

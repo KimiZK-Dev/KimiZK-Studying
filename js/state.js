@@ -32,7 +32,9 @@ export const state = {
     stats: {
         totalSeconds: 0,
         completedVideos: 0,
-        dailyActivity: {} // "2023-10-25": 120 (mins)
+        dailyActivity: {}, // "2023-10-25": 120 (mins)
+        lastTrackedDate: null, // Track date for daily reset
+        dailySecondsBuffer: 0 // Seconds accumulated today before converting to minutes
     },
     
     // Watch history: [{ videoId, name, topic, timestamp, duration, lastWatched }, ...]

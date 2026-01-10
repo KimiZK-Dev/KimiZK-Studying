@@ -120,12 +120,27 @@ function trackPlayTime() {
     if (player && player.playing) {
         state.stats.totalSeconds++;
         
-        // Update daily activity
+        // Get today's date string
         const today = new Date().toISOString().split('T')[0];
-        if (!state.stats.dailyActivity[today]) {
-            state.stats.dailyActivity[today] = 0;
+        
+        // Check if day changed - reset daily buffer
+        if (state.stats.lastTrackedDate !== today) {
+            state.stats.lastTrackedDate = today;
+            state.stats.dailySecondsBuffer = 0;
+            // Initialize today's activity if not exists
+            if (!state.stats.dailyActivity[today]) {
+                state.stats.dailyActivity[today] = 0;
+            }
         }
-        state.stats.dailyActivity[today] = Math.floor(state.stats.totalSeconds / 60);
+        
+        // Increment daily seconds buffer
+        state.stats.dailySecondsBuffer++;
+        
+        // Convert to minute when buffer reaches 60 seconds
+        if (state.stats.dailySecondsBuffer >= 60) {
+            state.stats.dailyActivity[today] = (state.stats.dailyActivity[today] || 0) + 1;
+            state.stats.dailySecondsBuffer -= 60;
+        }
         
         // Save every minute
         if (state.stats.totalSeconds % CONFIG.player.statsInterval === 0) {

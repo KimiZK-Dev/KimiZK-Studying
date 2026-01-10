@@ -64,7 +64,7 @@
     font-size: 1.1rem;
     cursor: pointer;
     border-radius: 50%;
-    transition: background 0.2s;
+    transition: all 0.2s ease;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -73,6 +73,11 @@
 .tool-btn:hover {
     background: var(--color-surface-hover);
     color: var(--color-primary);
+    transform: scale(1.1);
+}
+
+[data-theme="dark"] .tool-btn:hover {
+    box-shadow: 0 0 12px rgba(99, 102, 241, 0.3);
 }
 
 .close-panel,
@@ -89,7 +94,7 @@
     color: var(--color-text-main);
 }
 
-/* --- POMODORO WIDGET --- */
+/* --- POMODORO WIDGET - Enhanced --- */
 .pomodoro-widget {
     background: var(--color-bg-app);
     padding: 4px 12px;
@@ -98,6 +103,19 @@
     align-items: center;
     gap: 12px;
     border: 1px solid var(--color-sidebar-border);
+    transition: all 0.3s ease;
+}
+
+[data-theme="dark"] .pomodoro-widget {
+    background: rgba(30, 41, 59, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-color: rgba(99, 102, 241, 0.2);
+}
+
+.pomodoro-widget:hover {
+    border-color: var(--color-primary);
+    box-shadow: 0 0 10px rgba(99, 102, 241, 0.1);
 }
 
 .timer-display {

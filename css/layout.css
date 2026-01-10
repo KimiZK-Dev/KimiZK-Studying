@@ -38,9 +38,10 @@
 
 .sidebar.collapsed {
     width: 80px;
+    overflow: visible; /* Allow tooltips to overflow */
 }
 
-/* Sidebar Header */
+/* Sidebar Header - Modern Minimal */
 .sidebar-header {
     height: var(--header-height);
     display: flex;
@@ -49,28 +50,29 @@
     padding: 0 16px;
     border-bottom: 1px solid var(--color-sidebar-border);
     flex-shrink: 0;
+    transition: all 0.3s ease;
 }
 
-.logo {
+[data-theme="dark"] .sidebar-header {
+    background: rgba(30, 41, 59, 0.5);
+    backdrop-filter: blur(8px);
+}
+
+/* Logo Compact */
+.logo-compact {
     display: flex;
     align-items: center;
     gap: 10px;
-    font-family: var(--font-heading);
-    font-weight: 700;
-    font-size: 1.15rem;
-    color: var(--color-primary);
     white-space: nowrap;
     overflow: hidden;
-}
-
-.sidebar.collapsed .logo span {
-    display: none;
+    flex: 1;
+    min-width: 0;
 }
 
 .logo-icon {
-    width: 38px;
-    height: 38px;
-    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    width: 36px;
+    height: 36px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
     color: white;
     border-radius: 10px;
     display: flex;
@@ -78,45 +80,97 @@
     justify-content: center;
     font-size: 1rem;
     flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+    transition: transform 0.3s ease;
 }
 
-.pro-badge {
-    background: linear-gradient(135deg, #f59e0b, #d97706);
-    color: white;
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 4px;
+.logo-icon:hover {
+    transform: scale(1.05);
+}
+
+.logo-text {
+    font-family: var(--font-heading);
     font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.icon-btn-sm {
-    width: 32px;
-    height: 32px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: transparent;
-    border: none;
-    color: var(--color-text-muted);
-    cursor: pointer;
-    border-radius: var(--radius-sm);
-    transition: all 0.2s;
-}
-
-.icon-btn-sm:hover {
-    background: var(--color-surface-hover);
+    font-size: 1.1rem;
     color: var(--color-text-main);
 }
 
-.sidebar.collapsed .icon-btn-sm i {
+.logo-accent {
+    color: var(--color-primary);
+}
+
+.sidebar.collapsed .logo-text {
+    display: none;
+}
+
+/* Collapse Button */
+.collapse-btn {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-bg-app);
+    border: 1px solid var(--color-sidebar-border);
+    color: var(--color-text-muted);
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.collapse-btn:hover {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.sidebar.collapsed .collapse-btn i {
     transform: rotate(180deg);
 }
 
+/* Collapsed sidebar header - centered icon only */
 .sidebar.collapsed .sidebar-header {
-    padding: 0 10px;
+    padding: 0;
     justify-content: center;
+    flex-direction: column;
+    gap: 0;
+}
+
+.sidebar.collapsed .logo-compact {
+    justify-content: center;
+    flex: none;
+}
+
+.sidebar.collapsed .collapse-btn {
+    position: absolute;
+    right: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 28px;
+    height: 28px;
+    min-width: 28px;
+    border-radius: 50%;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    margin-left: 0;
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+.sidebar.collapsed .sidebar-header {
+    position: relative;
+}
+
+.sidebar.collapsed:hover .collapse-btn {
+    opacity: 1;
+    visibility: visible;
+    right: -14px;
 }
 
 /* Sidebar Body */
@@ -176,24 +230,7 @@
     display: none;
 }
 
-/* Tooltip on hover for topic header in collapsed mode */
-.sidebar.collapsed .topic-header:hover::before {
-    content: attr(data-topic);
-    position: absolute;
-    left: calc(100% + 10px);
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 8px 14px;
-    background: var(--color-secondary);
-    color: white;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border-radius: var(--radius-md);
-    white-space: nowrap;
-    z-index: 9999;
-    box-shadow: var(--shadow-lg);
-    pointer-events: none;
-}
+/* Tooltip for topic header - handled by Tippy.js */
 
 .sidebar.collapsed .video-node {
     justify-content: center;
@@ -210,26 +247,18 @@
     display: none;
 }
 
-/* Tooltip on hover for video node in collapsed mode */
-.sidebar.collapsed .video-node:hover::after {
-    content: attr(data-title);
-    position: absolute;
-    left: calc(100% + 10px);
-    top: 50%;
-    transform: translateY(-50%);
-    padding: 8px 14px;
-    background: var(--color-secondary);
-    color: white;
-    font-size: 0.85rem;
-    font-weight: 500;
-    border-radius: var(--radius-md);
-    white-space: nowrap;
-    z-index: 9999;
-    box-shadow: var(--shadow-lg);
-    pointer-events: none;
-    max-width: 250px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+/* Tooltip on hover for video node in collapsed mode - USE JS TOOLTIP */
+/* CSS tooltips removed - using Tippy.js instead for proper positioning */
+
+/* Keep scroll in collapsed mode */
+.sidebar.collapsed .sidebar-content {
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar.collapsed .course-tree {
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 /* Search Box */
@@ -443,7 +472,7 @@
     min-width: 0;
 }
 
-/* Top Nav */
+/* Top Nav - Enhanced */
 .top-nav {
     height: var(--header-height);
     background: var(--color-surface);
@@ -453,6 +482,14 @@
     justify-content: space-between;
     padding: 0 24px;
     flex-shrink: 0;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+[data-theme="dark"] .top-nav {
+    background: rgba(30, 41, 59, 0.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-glow);
 }
 
 .nav-left {
@@ -478,22 +515,40 @@
     color: var(--color-text-main);
 }
 
-.breadcrumbs {
+/* Nav Brand */
+.nav-brand {
     display: flex;
     align-items: center;
     gap: 10px;
-    color: var(--color-text-muted);
-    font-weight: 500;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.1), rgba(124, 58, 237, 0.1));
+    border-radius: 20px;
+    border: 1px solid rgba(79, 70, 229, 0.2);
+}
+
+.brand-icon {
+    width: 28px;
+    height: 28px;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.85rem;
+    animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 5px rgba(79, 70, 229, 0.4); }
+    50% { box-shadow: 0 0 15px rgba(124, 58, 237, 0.6); }
+}
+
+.brand-text {
+    font-weight: 600;
     font-size: 0.9rem;
-}
-
-.crumb-icon {
     color: var(--color-primary);
-}
-
-.separator {
-    font-size: 0.65rem;
-    color: var(--color-text-light);
+    letter-spacing: 0.3px;
 }
 
 .nav-tools {
@@ -621,8 +676,27 @@
     }
 
     /* Hide collapse toggle on mobile */
-    .sidebar .icon-btn-sm {
+    .sidebar .collapse-btn {
         display: none;
+    }
+    
+    /* Mobile sidebar header */
+    .sidebar .sidebar-header {
+        padding: 0 16px;
+        justify-content: flex-start;
+    }
+    
+    .sidebar .logo-text {
+        display: inline;
+    }
+    
+    .sidebar.collapsed .logo-text {
+        display: inline;
+    }
+    
+    .sidebar.collapsed .logo-compact {
+        justify-content: flex-start;
+        flex: 1;
     }
 
     /* Show all elements normally in mobile sidebar */
@@ -650,6 +724,8 @@
 
     .sidebar.collapsed .sidebar-content {
         padding: 16px;
+        overflow-y: auto;
+        overflow-x: hidden;
     }
 
     /* Mobile menu button visible */
@@ -662,11 +738,13 @@
         padding: 0 var(--mobile-padding);
     }
 
-    .breadcrumbs #currentCourseName {
-        max-width: 150px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
+    /* Nav brand on mobile */
+    .nav-brand {
+        padding: 4px 10px;
+    }
+    
+    .brand-text {
+        display: none;
     }
 
     /* Hide some nav tools on mobile */
@@ -745,30 +823,41 @@
     }
 
     .tool-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 1rem;
+        width: 36px;
+        height: 36px;
+        font-size: 0.95rem;
     }
 
-    /* Hide pomodoro on very small screens */
-    /* Show pomodoro on small screens but compact */
+    /* Hide pomodoro on very small screens to save space */
     .pomodoro-widget {
-        display: flex;
-    }
-
-    .breadcrumbs {
-        font-size: 0.85rem;
-    }
-
-    .breadcrumbs #currentCourseName {
-        max-width: 80px;
-    }
-
-    .breadcrumbs .separator {
         display: none;
     }
+    
+    .tool-separator {
+        display: none;
+    }
+    
+    /* Mobile menu button */
+    .mobile-menu-btn {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
 
-    .breadcrumbs .crumb-icon {
+    /* Nav brand - compact on very small screens */
+    .nav-brand {
+        padding: 4px 8px;
+        border: none;
+        background: transparent;
+    }
+    
+    .nav-brand .brand-icon {
+        width: 28px;
+        height: 28px;
+        font-size: 0.8rem;
+    }
+    
+    .nav-brand .brand-text {
         display: none;
     }
 
@@ -779,5 +868,20 @@
 
     .feature-item {
         padding: 12px 14px;
+    }
+    
+    /* Compact sidebar on mobile */
+    .sidebar .sidebar-header {
+        padding: 0 12px;
+    }
+    
+    .sidebar .logo-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+    
+    .sidebar .logo-text {
+        font-size: 1rem;
     }
 }
