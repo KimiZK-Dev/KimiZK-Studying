@@ -286,29 +286,75 @@ function setupStatsTabs() {
 /**
  * Calculate and display current streak
  */
+/**
+ * Calculate and display current streak
+ */
 function calculateStreak() {
     const streakEl = document.getElementById('currentStreak');
     if (!streakEl) return;
     
     const dailyActivity = state.stats.dailyActivity || {};
+    // Get unique dates sorted descending
     const dates = Object.keys(dailyActivity).sort().reverse();
     
-    let streak = 0;
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    if (dates.length === 0) {
+        streakEl.textContent = 0;
+        return;
+    }
+
+    // Identify "Today" in the same format as storage (UTC YYYY-MM-DD)
+    // proportional to how player.js saves it: new Date().toISOString().split('T')[0]
+    const now = new Date();
+    const todayStr = now.toISOString().split('T')[0];
     
-    for (let i = 0; i < dates.length; i++) {
-        const checkDate = new Date(today);
-        checkDate.setDate(checkDate.getDate() - i);
-        const dateStr = checkDate.toISOString().split('T')[0];
+    // Calculate Yesterday string (UTC)
+    const yesterday = new Date(now);
+    yesterday.setDate(yesterday.getDate() - 1);
+    const yesterdayStr = yesterday.toISOString().split('T')[0];
+    
+    // Check if the sequence is active (last study was Today or Yesterday)
+    // Note: In strict mode, if you missed yesterday, streak is 0. 
+    // But usually we allow "today" to be empty if checking early in the morning, 
+    // as long as "yesterday" has data. 
+    // If the latest data is OLDER than yesterday, streak is broken.
+    
+    const latestDate = dates[0];
+    
+    // Check if the streak is current
+    // We allow the latest entry to be Today OR Yesterday.
+    // If latest entry is older than yesterday, streak is 0.
+    // However, timezone issues might mean "Today" local is "Yesterday" UTC.
+    // So we'll limit the "broken" check to being older than 2 days just to be safe? 
+    // No, standard logic:
+    
+    // Helper to calculate days diff
+    const getDaysDiff = (d1, d2) => {
+        const t1 = new Date(d1).getTime();
+        const t2 = new Date(d2).getTime();
+        return Math.floor((t1 - t2) / (1000 * 60 * 60 * 24));
+    };
+
+    const diffFromToday = getDaysDiff(todayStr, latestDate);
+    
+    // If latest activity is more than 1 day ago (i.e., day before yesterday), streak is 0
+    if (diffFromToday > 1) {
+        streakEl.textContent = 0;
+        return;
+    }
+
+    let streak = 1;
+    
+    // Iterate and check gaps
+    for (let i = 0; i < dates.length - 1; i++) {
+        const current = dates[i];
+        const next = dates[i + 1];
         
-        if (dailyActivity[dateStr] && dailyActivity[dateStr] > 0) {
+        const diff = getDaysDiff(current, next);
+        
+        if (diff === 1) {
             streak++;
-        } else if (i === 0) {
-            // Today has no activity yet, don't break streak
-            continue;
         } else {
-            break;
+            break; // Gap found
         }
     }
     

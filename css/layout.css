@@ -185,7 +185,7 @@
 }
 
 .sidebar.collapsed .sidebar-content {
-    padding: 16px 8px;
+    padding: 16px 0;
 }
 
 /* Hide elements in collapsed mode */
@@ -251,14 +251,17 @@
 /* CSS tooltips removed - using Tippy.js instead for proper positioning */
 
 /* Keep scroll in collapsed mode */
+/* Keep scroll in collapsed mode */
 .sidebar.collapsed .sidebar-content {
     overflow-y: auto;
     overflow-x: hidden;
+    padding: 16px 0 16px 0; /* No right/left padding so scrollbar is at edge */
+    align-items: center; /* Center children since no padding */
 }
 
 .sidebar.collapsed .course-tree {
-    overflow-y: auto;
-    overflow-x: hidden;
+    width: 100%; /* Ensure full width usage */
+    overflow: visible; /* Let parent scroll */
 }
 
 /* Search Box */
