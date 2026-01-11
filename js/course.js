@@ -6,7 +6,7 @@
 import { state, resetCourseData } from './state.js';
 import { generateId, showToast } from './utils.js';
 import { ui, updateTotalVideos } from './ui.js';
-import { playVideo } from './player.js';
+import { playVideo, loadVideoPlaceholder } from './player.js';
 
 /**
  * Handle files selected from folder input
@@ -82,8 +82,8 @@ export function handleFilesSelected(e) {
     updateTotalVideos(state.flatPlaylist.length);
     renderCourseTree(sortedTopics);
     
-    // Play first video
-    playVideo(0);
+    // Load first video placeholder (don't play)
+    loadVideoPlaceholder(0);
     
     // Show success notification
     showToast(`Đã nhập ${sortedTopics.length} chủ đề`, { type: 'success' });

@@ -17,6 +17,9 @@ let player = null;
 // Progress save interval
 let progressSaveInterval = null;
 
+// Auto-next timer
+let autoNextTimer = null;
+
 /**
  * Get player instance
  * @returns {Plyr}
@@ -65,6 +68,15 @@ export function initPlyr() {
             saveCurrentProgress();
         }
     }, 10000);
+
+    // Initialize Placeholder Click
+    const placeholder = document.getElementById('videoPlaceholder');
+    if (placeholder) {
+        placeholder.onclick = () => {
+            // Play current index
+            playVideo(state.currentIndex);
+        };
+    }
 }
 
 /**
@@ -103,13 +115,21 @@ function handleVideoEnded() {
     // Add to history (completed)
     addToHistory(video, player.duration, player.duration);
     
-    
     // Check auto-play setting
     const autoPlay = state.settings?.autoPlay ?? true;
     
+    // Only auto-play if there is a next video
     if (autoPlay && state.currentIndex < state.flatPlaylist.length - 1) {
         showToast("Video tiếp theo sau 3s...", { type: 'info' });
-        setTimeout(() => playVideo(state.currentIndex + 1), CONFIG.player.autoNextDelay);
+        
+        // Clear any existing timer just in case
+        if (autoNextTimer) clearTimeout(autoNextTimer);
+        
+        // Set new timer
+        autoNextTimer = setTimeout(() => {
+            playVideo(state.currentIndex + 1, true); // True to skip resume check (auto move)
+            autoNextTimer = null;
+        }, CONFIG.player.autoNextDelay || 3000);
     }
 }
 
@@ -150,6 +170,53 @@ function trackPlayTime() {
 }
 
 /**
+ * Load video into placeholder mode (do not play yet)
+ * @param {number} index - Index in flatPlaylist
+ */
+export function loadVideoPlaceholder(index) {
+    if (index < 0 || index >= state.flatPlaylist.length) return;
+    
+    // Cancel any pending auto-next
+    if (autoNextTimer) {
+        clearTimeout(autoNextTimer);
+        autoNextTimer = null;
+    }
+
+    state.currentIndex = index;
+    const video = state.flatPlaylist[index];
+
+    // Show Player Interface but with Placeholder
+    showPlayer(); // This shows #playerContainer
+    
+    const placeholder = document.getElementById('videoPlaceholder');
+    if (placeholder) {
+        placeholder.classList.remove('hidden');
+        // Optional: Update placeholder text/icon?
+    }
+    
+    // Update Meta (Title, Topic, Time)
+    updateVideoMeta(video.displayName, video.topic);
+    updateVideoTime("--:--"); // Reset time display
+
+    // Sidebar highlight
+    highlightVideoInSidebar(video.id);
+
+    // Load notes
+    loadNotesForVideo(video.id);
+    
+    // Check materials
+    if (ui.materialBtn) {
+        const topicZips = state.zipFiles[video.topic] || [];
+        if (topicZips.length > 0) {
+            ui.materialBtn.classList.remove('hidden');
+            ui.materialBtn.onclick = () => openMaterial(video);
+        } else {
+            ui.materialBtn.classList.add('hidden');
+        }
+    }
+}
+
+/**
  * Play video by index
  * @param {number} index - Index in flatPlaylist
  * @param {boolean} skipResumeCheck - Skip the resume prompt
@@ -157,23 +224,35 @@ function trackPlayTime() {
 export function playVideo(index, skipResumeCheck = false) {
     if (index < 0 || index >= state.flatPlaylist.length) return;
     
+    // Cancel any pending auto-next
+    if (autoNextTimer) {
+        clearTimeout(autoNextTimer);
+        autoNextTimer = null;
+    }
+
+    // Hide Placeholder
+    const placeholder = document.getElementById('videoPlaceholder');
+    if (placeholder) {
+        placeholder.classList.add('hidden');
+    }
+
     const video = state.flatPlaylist[index];
     const progress = loadVideoProgress(video.id);
     
     // Check if should show resume prompt
+    // If video is completed, we don't ask to resume, we just start over (see startVideoPlayback)
+    // If NOT completed, and > 10s, we ask.
     if (!skipResumeCheck && progress && progress.currentTime > 10 && !progress.completed) {
         showResumePrompt(index, progress);
         return;
     }
     
-    startVideoPlayback(index, skipResumeCheck ? 0 : (progress?.currentTime || 0));
+    // If completed, start from 0. Else use saved time.
+    const startTime = (progress && progress.completed) ? 0 : (progress?.currentTime || 0);
+    
+    startVideoPlayback(index, startTime);
 }
 
-/**
- * Show resume prompt modal
- * @param {number} index
- * @param {object} progress
- */
 /**
  * Show resume prompt modal
  * @param {number} index
@@ -223,7 +302,6 @@ function showResumePrompt(index, progress) {
     modal.style.display = 'flex';
     
     // Button handlers
-    // Clear previous event listeners to avoid duplicates if any
     const btnStart = document.getElementById('resumeFromStart');
     const btnContinue = document.getElementById('resumeContinue');
     
@@ -259,10 +337,7 @@ function startVideoPlayback(index, startTime = 0) {
         player.speed = state.settings.defaultSpeed;
     }
     
-    
     // Resume Logic - "The Enforcer"
-    // We bind a one-time listener for valid metadata or playing event
-    // to force the time update.
     const enforceSeek = () => {
         // Only seek if we have a valid start time (> 1s)
         if (startTime > 1) {
@@ -272,7 +347,6 @@ function startVideoPlayback(index, startTime = 0) {
             // Check if seek stuck
             setTimeout(() => {
                 if (Math.abs(player.currentTime - startTime) > 2) {
-                    console.log(`Seek failed, retrying: ${startTime}`);
                     player.currentTime = startTime;
                 }
             }, 300);
@@ -281,16 +355,13 @@ function startVideoPlayback(index, startTime = 0) {
         // Start playing
         const playPromise = player.play();
         if (playPromise !== undefined) {
-            playPromise.catch(error => console.warn("Auto-play prevented:", error));
+            playPromise.catch(error => console.warn("Auto-play prevented (or deliberate stop):", error));
         }
     };
     
-    // Use 'ready' or 'loadedmetadata' depending on what fires first/reliably
-    // We use 'once' to ensure it runs only for this load
     player.once('loadedmetadata', enforceSeek);
     
-    // Fallback: If for some reason metadata event missed (race condition),
-    // check on 'canplay' as well
+    // Fallback
     player.once('canplay', () => {
         if (startTime > 0 && Math.abs(player.currentTime - startTime) > 2) {
             enforceSeek();
@@ -301,7 +372,7 @@ function startVideoPlayback(index, startTime = 0) {
     showPlayer();
     updateVideoMeta(video.displayName, video.topic);
     
-    // Check for materials (zip)
+    // Check for materials
     if (ui.materialBtn) {
         const topicZips = state.zipFiles[video.topic] || [];
         const hasZip = topicZips.length > 0;
@@ -360,8 +431,9 @@ function highlightVideoInSidebar(videoId) {
  * Play next video
  */
 export function playNext() {
+    if (autoNextTimer) clearTimeout(autoNextTimer); // Manual action clears timer
     if (state.currentIndex < state.flatPlaylist.length - 1) {
-        playVideo(state.currentIndex + 1, true); // Skip resume for next
+        playVideo(state.currentIndex + 1, true); 
     }
 }
 
@@ -369,6 +441,7 @@ export function playNext() {
  * Play previous video
  */
 export function playPrev() {
+    if (autoNextTimer) clearTimeout(autoNextTimer); // Manual action clears timer
     if (state.currentIndex > 0) {
         playVideo(state.currentIndex - 1);
     }
